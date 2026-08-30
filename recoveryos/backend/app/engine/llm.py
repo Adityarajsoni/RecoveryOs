@@ -1,20 +1,20 @@
-﻿import os
-import requests
+import os
+from dotenv import load_dotenv
+import google.generativeai as genai
+
+# Load .env forcefully
+load_dotenv(override=True)
 
 def call_gemini(prompt: str) -> str:
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         return "[Mock AI Reply] Please set GEMINI_API_KEY in the environment to use real AI generation.\n\n" + prompt[:100] + "..."
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
-    payload = {
-        "contents": [{"parts": [{"text": prompt}]}]
-    }
     try:
-        resp = requests.post(url, json=payload, timeout=10)
-        resp.raise_for_status()
-        data = resp.json()
-        return data["candidates"][0]["content"]["parts"][0]["text"]
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel('gemini-3.6-flash')
+        response = model.generate_content(prompt)
+        return response.text
     except Exception as e:
         return f"[AI Generation Failed] {str(e)}"
 

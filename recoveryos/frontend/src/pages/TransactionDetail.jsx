@@ -180,8 +180,29 @@ export default function TransactionDetail() {
           )}
 
           {draft && (
-            <div className="ai-content" style={{marginTop: '1rem', background: '#f8fafc', padding: '1.5rem', borderRadius: '8px', borderLeft: '4px solid #2563eb'}}>
-              <pre style={{whiteSpace: 'pre-wrap', fontFamily: 'inherit', margin: 0, lineHeight: 1.6}}>{draft}</pre>
+            <div className="email-composer" style={{marginTop: '1rem', border: '1px solid var(--border)', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'}}>
+              <div style={{background: '#f8fafc', padding: '1rem', borderBottom: '1px solid var(--border)'}}>
+                <div style={{display: 'flex', marginBottom: '0.5rem'}}>
+                  <span style={{color: 'var(--muted)', width: '60px'}}>To:</span>
+                  <span style={{fontWeight: 500}}>{event.customer_id}@example.com</span>
+                </div>
+                <div style={{display: 'flex'}}>
+                  <span style={{color: 'var(--muted)', width: '60px'}}>Subject:</span>
+                  <span style={{fontWeight: 500}}>Action Required: Payment Failed for Your Account</span>
+                </div>
+              </div>
+              <div style={{padding: '1.5rem', background: 'white'}}>
+                <textarea 
+                  defaultValue={draft} 
+                  style={{width: '100%', minHeight: '300px', border: 'none', resize: 'vertical', fontFamily: 'inherit', fontSize: '0.95rem', lineHeight: 1.6, outline: 'none'}} 
+                />
+              </div>
+              <div style={{padding: '1rem', background: '#f8fafc', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'flex-start'}}>
+                <button className="run-btn cta-btn" style={{padding: '0.5rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                  Send to Customer
+                </button>
+              </div>
             </div>
           )}
         </div>

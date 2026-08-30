@@ -16,17 +16,21 @@ Endpoints (see frontend/src/api for the matching client calls):
 from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException
+import os
 
 from app.adapters.simulation_adapter import SimulationAdapter
 from app.data.synthetic_generator import generate_batch
 from app.engine.orchestrator import Orchestrator
 from app.engine.playbook import discover_strategies
 from app.models import ActionCost, Policy
-from app.engine.llm import explain_decision, draft_communication
-
+from app.engine.llm import explain_decision, draft_communication, call_gemini
 
 
 router = APIRouter(prefix="/api")
+
+@router.get("/test_gemini")
+def test_gemini():
+    return {"response": call_gemini("Hello, are you working?")}
 
 # --- in-memory demo state (swap for a DB in a real deployment) ----------
 _DATASET = generate_batch(n=10_000, seed=42)

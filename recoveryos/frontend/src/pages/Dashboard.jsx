@@ -31,6 +31,7 @@ export default function Dashboard() {
 
   async function handleRun() {
     setRunning(true);
+    setResult(null); // Clear old numbers to simulate calculating from scratch
     setError(null);
     try {
       const res = await api.runRecoveryAutopilot();
@@ -162,20 +163,49 @@ function TransactionTabs({ transactions }) {
   
   const displayList = activeTab === 'escalations' ? escalations : automated;
 
+  const handleExportCSV = () => {
+    if (!transactions.length) return;
+    const headers = ["Transaction ID", "Customer ID", "Amount (INR)", "Action Taken", "Status", "Simulated", "Timestamp"];
+    const rows = transactions.map(tx => [
+      tx.transaction_id,
+      tx.customer_id,
+      tx.amount,
+      tx.action_taken,
+      tx.status,
+      tx.simulated,
+      tx.timestamp
+    ]);
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "recovery_audit_report.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <section className="transaction-tabs">
-      <div className="tab-header" style={{display: 'flex', gap: '1rem', borderBottom: '1px solid var(--border)', marginBottom: '1rem', marginTop: '3rem'}}>
-        <button 
-          style={{background: 'none', border: 'none', borderBottom: activeTab === 'escalations' ? '2px solid var(--accent)' : '2px solid transparent', padding: '0.5rem 1rem', fontSize: '1.1rem', fontWeight: 600, color: activeTab === 'escalations' ? 'var(--text)' : 'var(--muted)', cursor: 'pointer'}}
-          onClick={() => setActiveTab('escalations')}
-        >
-          VIP Escalations ({escalations.length})
-        </button>
-        <button 
-          style={{background: 'none', border: 'none', borderBottom: activeTab === 'automated' ? '2px solid var(--accent)' : '2px solid transparent', padding: '0.5rem 1rem', fontSize: '1.1rem', fontWeight: 600, color: activeTab === 'automated' ? 'var(--text)' : 'var(--muted)', cursor: 'pointer'}}
-          onClick={() => setActiveTab('automated')}
-        >
-          Automated Recovery ({automated.length})
+      <div className="tab-header" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderBottom: '1px solid var(--border)', marginBottom: '1rem', marginTop: '3rem'}}>
+        <div style={{display: 'flex', gap: '1rem'}}>
+          <button 
+            style={{background: 'none', border: 'none', borderBottom: activeTab === 'escalations' ? '2px solid var(--accent)' : '2px solid transparent', padding: '0.5rem 1rem', fontSize: '1.1rem', fontWeight: 600, color: activeTab === 'escalations' ? 'var(--text)' : 'var(--muted)', cursor: 'pointer'}}
+            onClick={() => setActiveTab('escalations')}
+          >
+            VIP Escalations ({escalations.length})
+          </button>
+          <button 
+            style={{background: 'none', border: 'none', borderBottom: activeTab === 'automated' ? '2px solid var(--accent)' : '2px solid transparent', padding: '0.5rem 1rem', fontSize: '1.1rem', fontWeight: 600, color: activeTab === 'automated' ? 'var(--text)' : 'var(--muted)', cursor: 'pointer'}}
+            onClick={() => setActiveTab('automated')}
+          >
+            Automated Recovery ({automated.length})
+          </button>
+        </div>
+        <button onClick={handleExportCSV} style={{background: 'white', border: '1px solid #cbd5e1', color: 'var(--text)', padding: '0.4rem 1rem', borderRadius: '4px', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem', fontWeight: 500}}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Export CSV
         </button>
       </div>
       
