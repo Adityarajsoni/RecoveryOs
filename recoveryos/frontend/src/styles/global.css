@@ -171,13 +171,23 @@ body {
   color: #cdd6e0;
 }
 
+.timeline-content {
+  min-width: 0;
+  flex-grow: 1;
+}
+
 .timeline-content pre {
-  background: #000;
+  background: #f1f5f9;
+  color: #334155;
   padding: 0.5rem;
   border-radius: 6px;
   font-size: 0.8rem;
   overflow-x: auto;
+  max-width: 100%;
+  white-space: pre-wrap;
+  word-break: break-word;
   margin-top: 0.5rem;
+  border: 1px solid var(--border);
 }
 
 /* Recent Interventions Table */
@@ -1010,51 +1020,68 @@ input:checked + .slider:before {
 /* MOBILE RESPONSIVENESS HACKATHON FIXES */
 @media (max-width: 768px) {
   /* Navbar */
-  nav {
-    flex-direction: column;
+  .topbar {
+    flex-direction: column !important;
     align-items: flex-start !important;
-    gap: 1rem;
+    height: auto !important;
     padding: 1rem !important;
+    gap: 1rem !important;
   }
-  .nav-links {
-    flex-direction: column;
-    gap: 0.5rem;
-    width: 100%;
+  .brand-sub {
+    display: none !important; /* Hide subtitle to save space */
+  }
+  .top-nav {
+    width: 100% !important;
+    gap: 1rem !important;
+    flex-wrap: wrap !important;
   }
 
-  /* Page Headers */
-  .page-header, .tab-header {
-    flex-direction: column;
+  /* Page Headers & Tabs */
+  .page-header {
+    flex-direction: column !important;
     align-items: flex-start !important;
-    gap: 1rem;
+    gap: 1rem !important;
+  }
+  .tab-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+  }
+  .tab-header > div {
+    flex-wrap: wrap !important;
   }
 
   /* Stat Grid */
   .stat-grid {
-    grid-template-columns: 1fr 1fr !important; /* 2 columns on mobile instead of 4 */
+    grid-template-columns: 1fr 1fr !important;
   }
 
   /* Funnel */
-  .funnel-container {
-    flex-direction: column;
+  .funnel-visual {
+    flex-direction: column !important;
     gap: 1rem !important;
   }
   .funnel-arrow {
-    transform: rotate(90deg);
+    transform: rotate(90deg) !important;
+    margin: 0 !important;
   }
 
   /* Tables */
-  .table-container {
-    overflow-x: auto;
-    width: 100%;
-    -webkit-overflow-scrolling: touch;
-  }
   table {
-    min-width: 600px; /* Force table to stay wide and enable horizontal scroll */
+    min-width: 700px !important;
+  }
+  
+  /* Fix container for table scrolling */
+  div[style*="overflowY"] {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
   }
 
   /* Transaction Detail Columns */
   .row-group {
+    grid-template-columns: 1fr !important;
+  }
+  .detail-grid {
     grid-template-columns: 1fr !important;
   }
 }
