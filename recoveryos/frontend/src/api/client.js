@@ -1,5 +1,5 @@
-// Use the production URL if provided, otherwise fallback to Vite's local proxy
-const BASE = import.meta.env.VITE_API_BASE_URL || "/api";
+// Use Vercel Serverless proxy to bypass Chrome blocks
+const BASE = "/api";
 
 async function request(path, options = {}) {
   const res = await fetch(`${BASE}${path}`, {
