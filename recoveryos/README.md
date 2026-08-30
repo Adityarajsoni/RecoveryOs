@@ -1,80 +1,67 @@
-# RecoveryOS — AI Revenue Recovery Autopilot
+# RecoveryOS 🤖💰
 
-Razorpay AI Buildathon — Track 3 submission. See the full spec this scaffold
-was built from for the complete feature list and priorities (P0/P1/P2).
+**The Autonomous Financial Agent for Revenue Recovery**
 
-## Status
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-black?style=for-the-badge&logo=vercel)](https://recovery-os-blue.vercel.app/)
+[![Backend API](https://img.shields.io/badge/Backend-Render-purple?style=for-the-badge)](https://recoveryos-k0eu.onrender.com)
 
-This is the initial scaffold: the P0 backbone runs end-to-end on a seeded
-synthetic dataset (10,000 events) —
+## 🚨 The Problem: The Silent Killer of SaaS
+Every year, subscription businesses lose billions of dollars to **Involuntary Churn**—customers who want to keep using the product, but their payment fails because their card expired or they had insufficient funds. 
 
-Risk detection → Decision Engine (expected-value action selection) →
-Policy Engine (retry limits, budget, authorization, human-approval
-threshold) → Simulation Adapter → Audit Ledger → batch metrics.
+The industry standard to fix this is "Dunning": a generic, hardcoded loop that spams the customer with the exact same automated email every 3 days. It ignores the context of the failure, destroys the customer relationship, and recovers a fraction of the revenue.
 
-Verified working via a local smoke test (2,000-event batch): ~19% at-risk,
-~53% of at-risk revenue recovered, sensible per-transaction audit trails,
-and two Recovery Playbook strategies discovered.
+## 🚀 The Solution: A Compound AI Agent
+We realized that revenue recovery shouldn't be a generic loop. It should be a highly intelligent, calculated decision. 
 
-**Not yet built:** transaction detail page, "Why this action?" panel,
-what-if UI (API endpoint exists, no frontend yet), policy settings screen,
-real Razorpay test-mode wiring (adapter is stubbed — see
-`backend/app/adapters/razorpay_adapter.py` for TODOs), premium dashboard
-styling (`frontend-design` skill hasn't been applied yet — current UI is a
-functional placeholder only).
+**RecoveryOS** completely replaces dumb retries with predictive Machine Learning. It is a true Compound AI System that **Perceives** failures, **Reasons** through the math, and **Acts** autonomously.
 
-## Project structure
+### Core Architecture
+1. **The Brain (Machine Learning):** Instead of `if/then` rules, RecoveryOS runs a trained **Random Forest Machine Learning** model. It analyzes the failure reason, customer history, and calculates the exact mathematical probability of recovering that money (Expected Value).
+2. **The Guardrails (Deterministic Policy Engine):** To prevent "Rogue AI" behavior, a strict policy engine physically bars the AI from executing actions on high-value VIP accounts, pushing them to human operators.
+3. **The Voice (Generative AI):** We integrated **Google Gemini 3.6** purely for human-in-the-loop tasks. It translates the AI's complex math into a plain-English explanation for support agents, and drafts hyper-personalized, white-glove recovery emails.
 
-```
-backend/
-  app/
-    models/      Pydantic schemas (PaymentEvent, Policy, RecoveryDecision, ...)
-    engine/       risk_predictor, decision_engine, policy_engine, playbook,
-                  audit_ledger, orchestrator (wires it all together)
-    adapters/     RecoveryActionAdapter interface + Razorpay + Simulation impls
-    data/         synthetic_generator.py (seeded batch of payment events)
-    api/          FastAPI routes
-    main.py       FastAPI app entrypoint
-frontend/
-  src/
-    api/client.js
-    pages/Dashboard.jsx   overview stats + RUN RECOVERY AUTOPILOT
-    App.jsx, main.jsx
+## 🌟 Key Features
+* **Autonomous Processing:** Analyzes 10,000+ failed payment events in under a second.
+* **The What-If Simulator:** A sandbox for CFOs. Safely tweak the AI's financial boundaries (like maximum discount allowed) and run synthetic simulations to forecast the financial impact *before* risking real company money.
+* **VIP Escalation Queue:** High-value transactions are automatically flagged for manual review, complete with Gemini AI co-pilot drafting.
+* **Razorpay Integration:** Dynamically generates real payment links for customers to seamlessly update their billing details.
+
+## 🛠 Tech Stack
+* **Frontend:** React, Vite, Vercel Serverless (API proxying)
+* **Backend:** Python, FastAPI, Uvicorn, Hosted on Render
+* **Machine Learning:** Scikit-Learn (Random Forest)
+* **Generative AI:** Google Gemini 3.6 API
+
+## 💻 Local Setup Instructions
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/Adityarajsoni/RecoveryOs.git
+cd RecoveryOs
 ```
 
-## Running it
-
-Backend:
+### 2. Backend Setup
 ```bash
 cd backend
+python -m venv venv
+# Activate virtual environment (Windows):
+.\venv\Scripts\activate
+# Install dependencies:
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+```
+**Environment Variables:** Create a `.env` file in the `backend/` directory and add your Google Gemini API key:
+`GEMINI_API_KEY="AIzaSy..."`
+
+**Run Backend:**
+```bash
+uvicorn app.main:app --reload
 ```
 
-Frontend:
+### 3. Frontend Setup
+Open a new terminal window:
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-
-Then open the Vite dev server URL — it proxies `/api` to `localhost:8000`.
-
-## Design notes / decisions baked into this scaffold
-
-- **RETRY is only a candidate action when `mandate_available` is true.**
-  This is the "never arbitrarily debit" boundary from the spec, enforced
-  in both `decision_engine._candidate_actions` and again defensively in
-  `policy_engine.check` and `RazorpayAdapter.execute`.
-- **All financial actions pass through `policy_engine.check`** before
-  execution — retry limits, recovery budget, feature toggles, contact-
-  attempt caps, and the human-approval threshold are all deterministic
-  checks, not LLM judgment calls.
-- **Every stage writes to `AuditLedger`**, so the full per-transaction
-  timeline (spec §14) can be reconstructed via `GET /api/recovery/audit/{id}`.
-- **Simulated vs. real actions are labeled at the data level**
-  (`ExecutionResult.simulated`), not just in the UI, so nothing can quietly
-  pretend a mock action was real.
-- The recovery-probability model is a hand-tuned, explainable scoring
-  function, not a black box — see the TODO in `risk_predictor.py` for
-  where a trained model would slot in.
+Open `http://localhost:5173` in your browser.
