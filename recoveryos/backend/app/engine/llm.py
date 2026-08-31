@@ -7,39 +7,29 @@ from dotenv import load_dotenv
 load_dotenv(override=True)
 
 def call_bedrock(prompt: str) -> str:
-    # We will use Claude 3 Haiku for blazing fast responses
-    # Make sure your AWS credentials are set in your environment
+    # We are switching to Amazon's native Nova model to bypass AWS Marketplace limits
     region = os.environ.get("AWS_REGION", "us-east-1")
     
     try:
-        # We wrap in try/except so the app doesn't crash if AWS credentials aren't set yet
         bedrock_runtime = boto3.client("bedrock-runtime", region_name=region)
         
-        body = json.dumps({
-            "anthropic_version": "bedrock-2023-05-31",
-            "max_tokens": 1000,
-            "messages": [
+        # Amazon Nova Micro is a blazing fast 1st-party model
+        model_id = "amazon.nova-micro-v1:0"
+
+        response = bedrock_runtime.converse(
+            modelId=model_id,
+            messages=[
                 {
                     "role": "user",
-                    "content": prompt
+                    "content": [{"text": prompt}]
                 }
             ]
-        })
-
-        model_id = "anthropic.claude-3-haiku-20240307-v1:0"
-
-        response = bedrock_runtime.invoke_model(
-            body=body,
-            modelId=model_id,
-            accept="application/json",
-            contentType="application/json"
         )
         
-        response_body = json.loads(response.get("body").read())
-        return response_body["content"][0]["text"]
+        return response["output"]["message"]["content"][0]["text"]
         
     except Exception as e:
-        return f"[AWS Bedrock Request Failed] Error: {str(e)}\n\nMake sure your AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are set, and Claude 3 Haiku model access is requested in Amazon Bedrock console."
+        return f"[AWS Bedrock Request Failed] Error: {str(e)}"
 
 
 def explain_decision(event_data: dict, audit_trail: list) -> str:
