@@ -33,7 +33,7 @@ def test_bedrock():
     return {"response": call_bedrock("Hello, are you working?")}
 
 # --- in-memory demo state (swap for a DB in a real deployment) ----------
-_DATASET = generate_batch(n=10_000, seed=42)
+_DATASET = generate_batch(n=50, seed=42)
 _POLICY = Policy()
 _COSTS = ActionCost()
 _LAST_ORCHESTRATOR: Orchestrator | None = None

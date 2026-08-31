@@ -26,6 +26,11 @@ app.include_router(router)
 def health():
     return {"status": "ok"}
 
+from fastapi.staticfiles import StaticFiles
+
+# Serve the compiled React frontend from the 'dist' folder
+app.mount("/", StaticFiles(directory="dist", html=True), name="frontend")
+
 # AWS Lambda Handler
 from mangum import Mangum
 handler = Mangum(app)

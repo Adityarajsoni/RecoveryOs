@@ -1,67 +1,59 @@
-# RecoveryOS 🤖💰
+# 🚀 AI Revenue Recovery Autopilot (RecoveryOS)
 
-**The Autonomous Financial Agent for Revenue Recovery**
+**Live Demo:** [RecoveryOS on AWS Elastic Beanstalk](http://recoveryos-backend-env.eba-cmkwyars.us-east-1.elasticbeanstalk.com/)
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-black?style=for-the-badge&logo=vercel)](https://recovery-os-blue.vercel.app/)
-[![Backend API](https://img.shields.io/badge/Backend-Render-purple?style=for-the-badge)](https://recoveryos-k0eu.onrender.com)
+RecoveryOS is an autonomous Compound AI system designed to intelligently recover failed payments for fintech companies and SaaS platforms. Instead of relying on dumb "retry every 3 days" logic, RecoveryOS uses **Amazon Bedrock** to analyze the context of a failed payment, predict the probability of recovery, and autonomously execute the best strategy (Retry, Email, Payment Link, or Escalate).
 
-## 🚨 The Problem: The Silent Killer of SaaS
-Every year, subscription businesses lose billions of dollars to **Involuntary Churn**—customers who want to keep using the product, but their payment fails because their card expired or they had insufficient funds. 
+Built specifically for the AWS Hackathon, this project demonstrates a highly governed, production-ready AI architecture.
 
-The industry standard to fix this is "Dunning": a generic, hardcoded loop that spams the customer with the exact same automated email every 3 days. It ignores the context of the failure, destroys the customer relationship, and recovers a fraction of the revenue.
+---
 
-## 🚀 The Solution: A Compound AI Agent
-We realized that revenue recovery shouldn't be a generic loop. It should be a highly intelligent, calculated decision. 
+## 🏗️ AWS Architecture & Tech Stack
 
-**RecoveryOS** completely replaces dumb retries with predictive Machine Learning. It is a true Compound AI System that **Perceives** failures, **Reasons** through the math, and **Acts** autonomously.
+This project was built entirely on native AWS infrastructure to ensure security, scalability, and compliance:
 
-### Core Architecture
-1. **The Brain (Machine Learning):** Instead of `if/then` rules, RecoveryOS runs a trained **Random Forest Machine Learning** model. It analyzes the failure reason, customer history, and calculates the exact mathematical probability of recovering that money (Expected Value).
-2. **The Guardrails (Deterministic Policy Engine):** To prevent "Rogue AI" behavior, a strict policy engine physically bars the AI from executing actions on high-value VIP accounts, pushing them to human operators.
-3. **The Voice (Generative AI):** We integrated **Google Gemini 3.6** purely for human-in-the-loop tasks. It translates the AI's complex math into a plain-English explanation for support agents, and drafts hyper-personalized, white-glove recovery emails.
+*   **Amazon Bedrock (Nova Micro):** Powers the core decision engine. It evaluates transaction history and failure reasons to generate human-readable explanations and draft personalized customer outreach emails.
+*   **Amazon DynamoDB:** Implements an immutable *Single-Table Design* Audit Ledger. Every single AI decision, probability score, and policy constraint is streamed here for financial compliance.
+*   **Amazon Verified Permissions / Cedar (Code Ready):** A zero-trust policy engine that prevents the AI from exceeding recovery budgets or spamming customers.
+*   **AWS Elastic Beanstalk:** Hosts the unified Python (FastAPI) and React (Vite) application, cleanly handling complex Machine Learning dependencies.
 
-## 🌟 Key Features
-* **Autonomous Processing:** Analyzes 10,000+ failed payment events in under a second.
-* **The What-If Simulator:** A sandbox for CFOs. Safely tweak the AI's financial boundaries (like maximum discount allowed) and run synthetic simulations to forecast the financial impact *before* risking real company money.
-* **VIP Escalation Queue:** High-value transactions are automatically flagged for manual review, complete with Gemini AI co-pilot drafting.
-* **Razorpay Integration:** Dynamically generates real payment links for customers to seamlessly update their billing details.
+---
 
-## 🛠 Tech Stack
-* **Frontend:** React, Vite, Vercel Serverless (API proxying)
-* **Backend:** Python, FastAPI, Uvicorn, Hosted on Render
-* **Machine Learning:** Scikit-Learn (Random Forest)
-* **Generative AI:** Google Gemini 3.6 API
+## ✨ Key Features
 
-## 💻 Local Setup Instructions
+1.  **Compound AI Workflow:** The system doesn't just use a single LLM call. It uses a structured pipeline: *Data Ingestion -> Risk Prediction (ML) -> Policy Guardrails -> Execution -> AI Explanation (Bedrock)*.
+2.  **Strict Policy Guardrails:** The AI is strictly governed. If a transaction exceeds the maximum retry count, or if the recovery action costs more than the allowed budget, the policy engine intercepts and blocks the AI.
+3.  **Immutable Audit Ledger:** Fintech requires extreme compliance. Every state change is written to DynamoDB, allowing human support agents to see exactly *why* the AI made a specific decision.
+4.  **Unified Deployment:** To guarantee zero CORS issues and lightning-fast performance, the compiled React frontend is served statically through the FastAPI backend directly on AWS Elastic Beanstalk.
 
-### 1. Clone the repository
+---
+
+## 🚀 How to use the Demo
+
+1.  Visit the [Live Demo Link](http://recoveryos-backend-env.eba-cmkwyars.us-east-1.elasticbeanstalk.com/).
+2.  Click **Run Autopilot Batch** in the top right corner.
+3.  The backend will simulate a batch of failed transactions, route them through the AI Policy Engine, and save the logs to DynamoDB.
+4.  Click on the **Automated Recovery** tab at the bottom to view the transactions.
+5.  Click on any transaction to see the **Amazon Bedrock** generated explanation and drafted email!
+
+---
+
+## 💻 Local Development
+
+### Backend (Python/FastAPI)
 ```bash
-git clone https://github.com/Adityarajsoni/RecoveryOs.git
-cd RecoveryOs
-```
-
-### 2. Backend Setup
-```bash
-cd backend
+cd recoveryos/backend
 python -m venv venv
-# Activate virtual environment (Windows):
-.\venv\Scripts\activate
-# Install dependencies:
+venv\Scripts\activate
 pip install -r requirements.txt
-```
-**Environment Variables:** Create a `.env` file in the `backend/` directory and add your Google Gemini API key:
-`GEMINI_API_KEY="AIzaSy..."`
-
-**Run Backend:**
-```bash
-uvicorn app.main:app --reload
+python -m uvicorn app.main:app --reload
 ```
 
-### 3. Frontend Setup
-Open a new terminal window:
+### Frontend (React/Vite)
 ```bash
-cd frontend
+cd recoveryos/frontend
 npm install
 npm run dev
 ```
-Open `http://localhost:5173` in your browser.
+
+*Note: You must have an AWS account with configured credentials (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`) and Amazon Nova Micro model access enabled in Bedrock to run locally.*
