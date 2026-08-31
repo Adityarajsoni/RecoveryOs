@@ -25,3 +25,7 @@ app.include_router(router)
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+# AWS Lambda Handler
+from mangum import Mangum
+handler = Mangum(app)
