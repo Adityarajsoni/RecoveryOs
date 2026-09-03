@@ -39,3 +39,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Deployment files
+backend_deployment.zip
